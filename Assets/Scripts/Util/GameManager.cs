@@ -6,13 +6,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public InputField nameInputField;
-    public SpriteRenderer characterDisplay;
-    public Button joinButton;
     public GameObject[] characterPrefabs;
-
-    private string selectedName;
     public GameObject selectedPrefab;
+    public SpriteRenderer characterDisplay;
+
+    public string playerName;
 
     void Awake()
     {
@@ -47,9 +45,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public string SetPlayerName(string name)
+    {
+        playerName = name;
+        return playerName;
+    }
+
     private void Initialize()
     {
-        nameInputField.onValueChanged.AddListener(delegate { ValidateNameInput(); });
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -92,7 +95,7 @@ public class GameManager : MonoBehaviour
         Text nameText = characterInstance.GetComponentInChildren<Text>();
         if (nameText)
         {
-            nameText.text = selectedName;
+            nameText.text = playerName;
         }
     }
 
@@ -110,21 +113,5 @@ public class GameManager : MonoBehaviour
             }
         }
         return null;
-    }
-
-    public void JoinGame()
-    {
-        if (ValidateNameInput())
-        {
-            PlayerPrefs.SetString("CharacterName", selectedName);
-            SceneManager.LoadScene("MainScene");
-        }
-    }
-
-    private bool ValidateNameInput()
-    {
-        bool isValid = !string.IsNullOrEmpty(nameInputField.text) && nameInputField.text.Length >= 2 && nameInputField.text.Length <= 10;
-        selectedName = isValid ? nameInputField.text : "";
-        return isValid;
     }
 }
