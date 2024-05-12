@@ -1,20 +1,41 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public SpriteRenderer selectedCharacterSprite;
+    public InputField nameInputField;
+    public GameObject characterSelectPopup;
+    public SpriteRenderer characterDisplay;
+    public Button joinButton;
     public GameObject[] characterPrefabs;
-    public GameObject selectionPopup;
 
+    private string selectedName;
+    private GameObject selectedPrefab;
 
-    public Button chooseCharacter;
+    void Awake()
+    {
+        SetupSingleton();
+    }
 
-    private const string characterPrefsKey = "SelectedCharacter";
+    void Start()
+    {
+        Initialize();
+    }
 
-    private void Awake()
+    void LateUpdate()
+    {
+        UpdateSelectedPrefab();
+    }
+
+    void OnDestroy()
+    {
+        Cleanup();
+    }
+
+    private void SetupSingleton()
     {
         if (Instance == null)
         {
@@ -26,42 +47,101 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    void Start()
+
+    private void Initialize()
     {
-        chooseCharacter.onClick.AddListener(OnCharacterClick);
-        
-    }
-    public void OnCharacterClick()
-    {
-        ShowPopup();
-    }
-    void ShowPopup()
-    {
-        selectionPopup.SetActive(true);
+        nameInputField.onValueChanged.AddListener(delegate { ValidateNameInput(); });
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    void HidePopup()
+    private void Cleanup()
     {
-        selectionPopup.SetActive(false);
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    public void SelectCharacter(Sprite sprite, string characterName)
+    private void UpdateSelectedPrefab()
     {
-        selectedCharacterSprite.sprite = sprite;
-        HidePopup();
-        PlayerPrefs.SetString(characterPrefsKey, characterName);
-        PlayerPrefs.Save();
-    }
-    public GameObject FindPrefabBySprite(Sprite sprite)
-    {
-        foreach (GameObject prefab in characterPrefabs)
+        if (!selectedPrefab)
         {
-            SpriteRenderer renderer = prefab.GetComponent<SpriteRenderer>();
-            if (renderer != null && renderer.sprite == sprite)
+            selectedPrefab = FindPrefabWithSprite(characterDisplay.sprite);
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "MainScene")
+        {
+            InstantiateCharacter();
+        }
+    }
+
+    private void InstantiateCharacter()
+    {
+        if (selectedPrefab)
+        {
+            GameObject instance = Instantiate(selectedPrefab);
+            UpdateCharacterName(instance);
+        }
+        else
+        {
+            Debug.LogError("Selected prefab is null. Cannot instantiate character.");
+        }
+    }
+
+    private void UpdateCharacterName(GameObject characterInstance)
+    {
+        Text nameText = characterInstance.GetComponentInChildren<Text>();
+        if (nameText)
+        {
+            nameText.text = selectedName;
+        }
+    }
+
+    public void OpenCharacterSelectPopup()
+    {
+        characterSelectPopup.SetActive(true);
+    }
+
+    public void SelectCharacter(GameObject characterObject)
+    {
+        SpriteRenderer spriteRenderer = characterObject.GetComponentInChildren<SpriteRenderer>();
+        if (spriteRenderer)
+        {
+            characterDisplay.sprite = spriteRenderer.sprite;
+            selectedPrefab = FindPrefabWithSprite(spriteRenderer.sprite);
+            characterSelectPopup.SetActive(false);
+        }
+    }
+
+    private GameObject FindPrefabWithSprite(Sprite sprite)
+    {
+        foreach (var prefab in characterPrefabs)
+        {
+            SpriteRenderer[] renderers = prefab.GetComponentsInChildren<SpriteRenderer>(true);
+            foreach (var renderer in renderers)
             {
-                return prefab;
+                if (renderer.sprite.name == sprite.name)
+                {
+                    return prefab;
+                }
             }
         }
         return null;
+    }
+
+    public void JoinGame()
+    {
+        if (ValidateNameInput())
+        {
+            PlayerPrefs.SetString("CharacterName", selectedName);
+            SceneManager.LoadScene("MainScene");
+        }
+    }
+
+    private bool ValidateNameInput()
+    {
+        bool isValid = !string.IsNullOrEmpty(nameInputField.text) && nameInputField.text.Length >= 2 && nameInputField.text.Length <= 10;
+        selectedName = isValid ? nameInputField.text : "";
+        return isValid;
     }
 }
