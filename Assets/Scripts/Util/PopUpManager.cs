@@ -4,7 +4,8 @@ using UnityEngine;
 public class PopupManager : MonoBehaviour
 {
     public static PopupManager Instance;
-    public GameObject CharacterChoicePopup;
+    private Dictionary<string, GameObject> popups = new Dictionary<string, GameObject>();
+
     void Awake()
     {
         if (Instance == null)
@@ -18,19 +19,35 @@ public class PopupManager : MonoBehaviour
         }
     }
 
-    public void OpenPopup(GameObject popup)
+    public void RegisterPopup(string popupName, GameObject popup)
     {
-        if (popup != null)
+        if (!popups.ContainsKey(popupName))
         {
-            popup.SetActive(true);
+            popups.Add(popupName, popup);
         }
     }
 
-    public void ClosePopup(GameObject popup)
+    public void UnregisterPopup(string popupName)
     {
-        if (popup != null)
+        if (popups.ContainsKey(popupName))
         {
-            popup.SetActive(false);
+            popups.Remove(popupName);
+        }
+    }
+
+    public void OpenPopup(string popupName)
+    {
+        if (popups.ContainsKey(popupName))
+        {
+            popups[popupName].SetActive(true);
+        }
+    }
+
+    public void ClosePopup(string popupName)
+    {
+        if (popups.ContainsKey(popupName))
+        {
+            popups[popupName].SetActive(false);
         }
     }
 }
