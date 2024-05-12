@@ -7,13 +7,12 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public InputField nameInputField;
-    public GameObject characterSelectPopup;
     public SpriteRenderer characterDisplay;
     public Button joinButton;
     public GameObject[] characterPrefabs;
 
     private string selectedName;
-    private GameObject selectedPrefab;
+    public GameObject selectedPrefab;
 
     void Awake()
     {
@@ -97,23 +96,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void OpenCharacterSelectPopup()
-    {
-        characterSelectPopup.SetActive(true);
-    }
-
-    public void SelectCharacter(GameObject characterObject)
-    {
-        SpriteRenderer spriteRenderer = characterObject.GetComponentInChildren<SpriteRenderer>();
-        if (spriteRenderer)
-        {
-            characterDisplay.sprite = spriteRenderer.sprite;
-            selectedPrefab = FindPrefabWithSprite(spriteRenderer.sprite);
-            characterSelectPopup.SetActive(false);
-        }
-    }
-
-    private GameObject FindPrefabWithSprite(Sprite sprite)
+    public GameObject FindPrefabWithSprite(Sprite sprite)
     {
         foreach (var prefab in characterPrefabs)
         {
