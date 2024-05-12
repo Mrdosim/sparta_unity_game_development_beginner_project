@@ -9,7 +9,7 @@ public class ChracterChoicePopup : MonoBehaviour
         {
             GameManager.Instance.characterDisplay.sprite = spriteRenderer.sprite;
             GameManager.Instance.selectedPrefab = GameManager.Instance.FindPrefabWithSprite(spriteRenderer.sprite);
-            PopupManager.Instance.ClosePopup("CharacterChoicePopup");
+            PopupManager.Instance.ClosePopup(SelectSceneManager.Instance.characterSelectPopup);
         }
 
     }

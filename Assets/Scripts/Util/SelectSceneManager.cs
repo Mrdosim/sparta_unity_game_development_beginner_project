@@ -4,23 +4,25 @@ using UnityEngine.UI;
 
 public class SelectSceneManager :MonoBehaviour
 {
+    public static SelectSceneManager Instance;
+
     public GameObject characterSelectPopup;  // Ä³¸¯ÅÍ ¼±ÅÃ ÆË¾÷ °´Ã¼
 
     public InputField nameInputField;
-    public Button joinButton;
 
     private string selectedName;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
 
     void Start()
     {
-        PopupManager.Instance.RegisterPopup("CharacterChoicePopup", characterSelectPopup);
         nameInputField.onValueChanged.AddListener(delegate { ValidateNameInput(); });
-    }
-
-    void OnDestroy()
-    {
-        PopupManager.Instance.UnregisterPopup("CharacterChoicePopup");
     }
 
     public void JoinGame()
