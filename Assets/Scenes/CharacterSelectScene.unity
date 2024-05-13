@@ -378,6 +378,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 270509112}
   m_CullTransparentMesh: 1
+--- !u!1 &293824959
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 293824961}
+  - component: {fileID: 293824960}
+  m_Layer: 0
+  m_Name: PopupManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &293824960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 293824959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9dd000014619fe419381db40320655e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &293824961
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 293824959}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &325964920
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,9 +505,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 940818994}
-        m_TargetAssemblyTypeName: CharacterSelectionManager, Assembly-CSharp
-        m_MethodName: SelectCharacter
+      - m_Target: {fileID: 885813873}
+        m_TargetAssemblyTypeName: SelectSceneManager, Assembly-CSharp
+        m_MethodName: OnCharacterClicked
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 325964920}
@@ -673,8 +717,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 940818994}
-        m_TargetAssemblyTypeName: CharacterSelectionManager, Assembly-CSharp
+      - m_Target: {fileID: 885813873}
+        m_TargetAssemblyTypeName: SelectSceneManager, Assembly-CSharp
         m_MethodName: JoinGame
         m_Mode: 1
         m_Arguments:
@@ -911,7 +955,7 @@ GameObject:
   m_Component:
   - component: {fileID: 671252641}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: DisplayCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -925,7 +969,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 671252640}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -4.327059, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1181,6 +1225,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 847318446}
   m_CullTransparentMesh: 1
+--- !u!1 &885813872
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 885813874}
+  - component: {fileID: 885813873}
+  m_Layer: 0
+  m_Name: SelecSceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &885813873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 885813872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f80ed0b736a34de4194e62203c15e1f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterSelectPopup: {fileID: 1731600349}
+  nameInputField: {fileID: 847318448}
+--- !u!4 &885813874
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 885813872}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &917560901
 GameObject:
   m_ObjectHideFlags: 0
@@ -1313,14 +1403,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86cfd6cf620086c408b420e7434fbb66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameInputField: {fileID: 847318448}
-  characterSelectPopup: {fileID: 1731600349}
-  characterDisplay: {fileID: 917560903}
-  joinButton: {fileID: 391757561}
   characterPrefabs:
   - {fileID: 7697313837959952823, guid: 8d179f75f95f06041922b15f85b1d42b, type: 3}
   - {fileID: 7697313837959952823, guid: c412e0322ae4b4f42a2b4fb165b10991, type: 3}
   selectedPrefab: {fileID: 0}
+  characterDisplay: {fileID: 917560903}
+  playerName: 
 --- !u!1 &1128025526
 GameObject:
   m_ObjectHideFlags: 0
@@ -1613,7 +1701,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1731600350}
   m_Layer: 0
-  m_Name: CharacterChoicePopUp
+  m_Name: CharacterChoicePopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1718,9 +1806,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 940818994}
-        m_TargetAssemblyTypeName: CharacterSelectionManager, Assembly-CSharp
-        m_MethodName: SelectCharacter
+      - m_Target: {fileID: 885813873}
+        m_TargetAssemblyTypeName: SelectSceneManager, Assembly-CSharp
+        m_MethodName: OnCharacterClicked
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1731802543}
@@ -1954,16 +2042,16 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 940818994}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: OpenCharacterSelectPopup
-        m_Mode: 1
+      - m_Target: {fileID: 293824960}
+        m_TargetAssemblyTypeName: PopupManager, Assembly-CSharp
+        m_MethodName: OpenPopup
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1731600349}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: CharacterChoicePopup
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1788313214
@@ -2011,6 +2099,8 @@ SceneRoots:
   - {fileID: 573317657}
   - {fileID: 1383292598}
   - {fileID: 1588312281}
+  - {fileID: 671252641}
   - {fileID: 1731600350}
   - {fileID: 940818993}
-  - {fileID: 671252641}
+  - {fileID: 293824961}
+  - {fileID: 885813874}

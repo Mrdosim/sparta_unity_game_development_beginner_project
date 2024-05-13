@@ -6,14 +6,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public InputField nameInputField;
-    public GameObject characterSelectPopup;
-    public SpriteRenderer characterDisplay;
-    public Button joinButton;
     public GameObject[] characterPrefabs;
+    public GameObject selectedPrefab;
+    public SpriteRenderer characterDisplay;
 
-    private string selectedName;
-    private GameObject selectedPrefab;
+    public string playerName;
 
     void Awake()
     {
@@ -48,9 +45,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public string SetPlayerName(string name)
+    {
+        playerName = name;
+        return playerName;
+    }
+
     private void Initialize()
     {
-        nameInputField.onValueChanged.AddListener(delegate { ValidateNameInput(); });
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -93,27 +95,11 @@ public class GameManager : MonoBehaviour
         Text nameText = characterInstance.GetComponentInChildren<Text>();
         if (nameText)
         {
-            nameText.text = selectedName;
+            nameText.text = playerName;
         }
     }
 
-    public void OpenCharacterSelectPopup()
-    {
-        characterSelectPopup.SetActive(true);
-    }
-
-    public void SelectCharacter(GameObject characterObject)
-    {
-        SpriteRenderer spriteRenderer = characterObject.GetComponentInChildren<SpriteRenderer>();
-        if (spriteRenderer)
-        {
-            characterDisplay.sprite = spriteRenderer.sprite;
-            selectedPrefab = FindPrefabWithSprite(spriteRenderer.sprite);
-            characterSelectPopup.SetActive(false);
-        }
-    }
-
-    private GameObject FindPrefabWithSprite(Sprite sprite)
+    public GameObject FindPrefabWithSprite(Sprite sprite)
     {
         foreach (var prefab in characterPrefabs)
         {
@@ -127,21 +113,5 @@ public class GameManager : MonoBehaviour
             }
         }
         return null;
-    }
-
-    public void JoinGame()
-    {
-        if (ValidateNameInput())
-        {
-            PlayerPrefs.SetString("CharacterName", selectedName);
-            SceneManager.LoadScene("MainScene");
-        }
-    }
-
-    private bool ValidateNameInput()
-    {
-        bool isValid = !string.IsNullOrEmpty(nameInputField.text) && nameInputField.text.Length >= 2 && nameInputField.text.Length <= 10;
-        selectedName = isValid ? nameInputField.text : "";
-        return isValid;
     }
 }
