@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainSceneManager : MonoBehaviour
@@ -8,6 +9,9 @@ public class MainSceneManager : MonoBehaviour
     public GameObject CharacterList;
     public Text CharacterListText;
     public GameObject CharacterChange;
+    public GameObject characterNameChange;
+    public InputField characterNameInputField;
+    private string _changedName;
 
     private void Awake()
     {
@@ -19,18 +23,16 @@ public class MainSceneManager : MonoBehaviour
 
     private void Start()
     {
+        characterNameInputField.onValueChanged.AddListener(delegate { ValidateNameInput(); });
     }
 
     public void UpdateCharacterList()
     {
         List<string> texts = CollectTextsFromLayers(new string[] { "Player", "Npc" });
-        Debug.Log("Texts collected: " + texts.Count);
-
-        CharacterListText.text = "";  // 기존 텍스트 초기화
+        CharacterListText.text = "";
         foreach (string text in texts)
         {
             CharacterListText.text += text + "\n";
-            Debug.Log("Collected Text: " + text);
         }
     }
 
@@ -51,7 +53,6 @@ public class MainSceneManager : MonoBehaviour
                     if (objLayer == layerMask && !collectedTexts.Contains(textComponent.text))
                     {
                         collectedTexts.Add(textComponent.text);
-                        Debug.Log($"Found text in {layer} layer: {textComponent.text}");
                     }
                 }
             }
@@ -73,7 +74,6 @@ public class MainSceneManager : MonoBehaviour
     {
         if (characterObject == null)
         {
-            Debug.LogError("Character object is null");
             return;
         }
 
@@ -85,10 +85,6 @@ public class MainSceneManager : MonoBehaviour
             {
                 ReplaceCharacter(prefab, characterObject.transform.position, GameManager.Instance.playerName);
                 PopupManager.Instance.ClosePopup(CharacterChange);
-            }
-            else
-            {
-                Debug.LogError("No matching prefab found for the selected character.");
             }
         }
     }
@@ -102,7 +98,6 @@ public class MainSceneManager : MonoBehaviour
             spawnPosition = existingCharacter.transform.position;
             characterName = existingCharacter.GetComponentInChildren<Text>().text;
             Destroy(existingCharacter);
-            Debug.Log("Existing character destroyed.");
         }
 
         // 새로운 캐릭터 인스턴스화
@@ -113,6 +108,23 @@ public class MainSceneManager : MonoBehaviour
         {
             nameTextComponent.text = characterName;
         }
-        Debug.Log($"Character instantiated successfully at {spawnPosition} with name {characterName}");
+    }
+    private bool ValidateNameInput()
+    {
+        bool isValid = !string.IsNullOrEmpty(characterNameInputField.text) && characterNameInputField.text.Length >= 2 && characterNameInputField.text.Length <= 10;
+        _changedName = isValid ? characterNameInputField.text : "";
+        return isValid;
+    }
+    public void ChangeName()
+    {
+        if (ValidateNameInput())
+        {
+            GameManager.Instance.SetPlayerName(_changedName);
+            PlayerPrefs.SetString("CharacterName", _changedName);
+            GameObject existingCharacter = GameObject.FindWithTag("Player");
+            Text characterText = existingCharacter.GetComponentInChildren<Text>();
+            characterText.text = characterNameInputField.text;
+            characterNameChange.SetActive(false);
+        }
     }
 }

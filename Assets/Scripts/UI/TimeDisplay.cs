@@ -9,10 +9,6 @@ public class TimeDisplay : MonoBehaviour
     void Start()
     {
         timeText = GetComponentInChildren<Text>();  // 시작할 때 Text 컴포넌트를 가져옵니다.
-        if (timeText == null)
-        {
-            Debug.LogError("TextMeshProUGUI component not found!");
-        }
     }
 
     void Update()
