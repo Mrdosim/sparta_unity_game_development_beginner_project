@@ -7,6 +7,7 @@ public class MainSceneManager : MonoBehaviour
     public static MainSceneManager Instance;
     public GameObject CharacterList;
     public Text CharacterListText;
+    public GameObject CharacterChange;
 
     private void Awake()
     {
@@ -15,35 +16,39 @@ public class MainSceneManager : MonoBehaviour
             Instance = this;
         }
     }
+
     private void Start()
     {
-        Debug.Log("Script started");
-        // Player와 NPC 레이어의 객체들에서 텍스트를 수집
+    }
+
+    public void UpdateCharacterList()
+    {
         List<string> texts = CollectTextsFromLayers(new string[] { "Player", "Npc" });
         Debug.Log("Texts collected: " + texts.Count);
 
-        // 수집된 텍스트를 하나씩 출력
+        CharacterListText.text = "";  // 기존 텍스트 초기화
         foreach (string text in texts)
         {
             CharacterListText.text += text + "\n";
             Debug.Log("Collected Text: " + text);
         }
     }
-    List<string> CollectTextsFromLayers(string[] layers)
+
+    private List<string> CollectTextsFromLayers(string[] layers)
     {
         List<string> collectedTexts = new List<string>();
-        foreach (string layer in layers)
-        {
-            int layerMask = LayerMask.GetMask(layer);
-            GameObject[] objects = FindObjectsOfType<GameObject>();
+        Text[] allTexts = FindObjectsOfType<Text>(true);
 
-            foreach (GameObject obj in objects)
+        foreach (Text textComponent in allTexts)
+        {
+            GameObject rootObj = GetRootGameObject(textComponent.gameObject);
+            if (rootObj != null)
             {
-                if (((1 << obj.layer) & layerMask) != 0)
+                int objLayer = rootObj.layer;
+                foreach (string layer in layers)
                 {
-                    // 최상위 GameObject에서 Text 컴포넌트를 찾기
-                    Text textComponent = GetRootGameObject(obj).GetComponentInChildren<Text>(true);
-                    if (textComponent != null && !collectedTexts.Contains(textComponent.text))
+                    int layerMask = LayerMask.NameToLayer(layer);
+                    if (objLayer == layerMask && !collectedTexts.Contains(textComponent.text))
                     {
                         collectedTexts.Add(textComponent.text);
                         Debug.Log($"Found text in {layer} layer: {textComponent.text}");
@@ -54,7 +59,7 @@ public class MainSceneManager : MonoBehaviour
         return collectedTexts;
     }
 
-    GameObject GetRootGameObject(GameObject obj)
+    private GameObject GetRootGameObject(GameObject obj)
     {
         Transform current = obj.transform;
         while (current.parent != null)
@@ -62,5 +67,52 @@ public class MainSceneManager : MonoBehaviour
             current = current.parent;
         }
         return current.gameObject;
+    }
+
+    public void OnCharacterSelected(GameObject characterObject)
+    {
+        if (characterObject == null)
+        {
+            Debug.LogError("Character object is null");
+            return;
+        }
+
+        SpriteRenderer spriteRenderer = characterObject.GetComponentInChildren<SpriteRenderer>();
+        if (spriteRenderer)
+        {
+            GameObject prefab = GameManager.Instance.FindPrefabWithSprite(spriteRenderer.sprite);
+            if (prefab != null)
+            {
+                ReplaceCharacter(prefab, characterObject.transform.position, GameManager.Instance.playerName);
+                PopupManager.Instance.ClosePopup(CharacterChange);
+            }
+            else
+            {
+                Debug.LogError("No matching prefab found for the selected character.");
+            }
+        }
+    }
+
+    private void ReplaceCharacter(GameObject newPrefab, Vector3 spawnPosition, string characterName)
+    {
+        // 기존 캐릭터 찾기
+        GameObject existingCharacter = GameObject.FindWithTag("Player");
+        if (existingCharacter != null)
+        {
+            spawnPosition = existingCharacter.transform.position;
+            characterName = existingCharacter.GetComponentInChildren<Text>().text;
+            Destroy(existingCharacter);
+            Debug.Log("Existing character destroyed.");
+        }
+
+        // 새로운 캐릭터 인스턴스화
+        GameObject newCharacter = Instantiate(newPrefab, spawnPosition, Quaternion.identity);
+        newCharacter.tag = "Player";
+        Text nameTextComponent = newCharacter.GetComponentInChildren<Text>();
+        if (nameTextComponent != null)
+        {
+            nameTextComponent.text = characterName;
+        }
+        Debug.Log($"Character instantiated successfully at {spawnPosition} with name {characterName}");
     }
 }
