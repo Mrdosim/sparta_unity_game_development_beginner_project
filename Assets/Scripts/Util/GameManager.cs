@@ -84,10 +84,6 @@ public class GameManager : MonoBehaviour
             GameObject instance = Instantiate(selectedPrefab);
             UpdateCharacterName(instance);
         }
-        else
-        {
-            Debug.LogError("Selected prefab is null. Cannot instantiate character.");
-        }
     }
 
     private void UpdateCharacterName(GameObject characterInstance)
