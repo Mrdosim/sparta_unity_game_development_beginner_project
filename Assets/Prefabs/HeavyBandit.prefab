@@ -199,6 +199,7 @@ GameObject:
   - component: {fileID: 8624119158216967295}
   - component: {fileID: 3586777206912962303}
   - component: {fileID: 3825303720692553110}
+  - component: {fileID: 1766906446423399297}
   m_Layer: 7
   m_Name: HeavyBandit
   m_TagString: Player
@@ -377,6 +378,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d667b504a60734cae13bc7c41c295c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1766906446423399297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7697313837959952823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13d0e62721e731a47916713e45e4ef50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 0}
+  lerpSpeed: 5
 --- !u!1 &8145900144991163547
 GameObject:
   m_ObjectHideFlags: 0

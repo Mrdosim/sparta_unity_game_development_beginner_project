@@ -1,60 +1,30 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;
-    public float lerpSpeed = 5.0f;
-    public string targetLayerName = "Player"; // 추적할 대상의 레이어 이름
-
-    private Vector3 offset;
+    public Transform cameraTransform; // 카메라의 Transform
+    public float lerpSpeed = 5.0f; // 카메라가 따라잡는 속도
+    private Vector3 offset; // 초기 오프셋
 
     private void Start()
     {
-        // 레이어 이름을 이용해 추적 대상 찾기
-        if (target == null)
+        if (cameraTransform == null)
         {
-            target = FindTargetByLayerName(targetLayerName);
+            cameraTransform = Camera.main.transform; // 메인 카메라 자동 할당
         }
 
-        if (target != null)
-        {
-            offset = transform.position - target.position;
-        }
+        // 플레이어와 카메라 사이의 초기 오프셋 계산
+        offset = cameraTransform.position - transform.position;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        if (target == null) return;
+        if (cameraTransform == null) return;
 
-        Vector3 targetPos = target.position + offset;
-        transform.position = Vector3.Lerp(transform.position, targetPos, lerpSpeed * Time.deltaTime);
-    }
+        // 플레이어의 현재 위치에 오프셋을 더하여 카메라가 이동할 목표 위치를 계산
+        Vector3 targetPosition = transform.position + offset;
 
-    // 레이어 이름에 따른 첫 번째 객체의 Transform을 반환
-    private Transform FindTargetByLayerName(string layerName)
-    {
-        int layer = LayerMask.NameToLayer(layerName);
-        GameObject[] gameObjects = FindGameObjectsInLayer(layer);
-        if (gameObjects.Length > 0)
-        {
-            return gameObjects[0].transform;
-        }
-        return null;
-    }
-
-    // 지정된 레이어에 있는 모든 GameObject를 배열로 반환
-    private GameObject[] FindGameObjectsInLayer(int layer)
-    {
-        var goArray = FindObjectsOfType<GameObject>();
-        var goList = new List<GameObject>();
-        for (int i = 0; i < goArray.Length; i++)
-        {
-            if (goArray[i].layer == layer)
-            {
-                goList.Add(goArray[i]);
-            }
-        }
-        return goList.ToArray();
+        // 카메라 위치를 부드럽게 이동
+        cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, lerpSpeed * Time.deltaTime);
     }
 }
